@@ -11,20 +11,51 @@ import java.util.Map;
 
 @Service
 public class RecipeServiceImpl implements RecipeService {
-    Map<Integer, Recipe> recipeMap = new LinkedHashMap<>();
+    public Map<Integer, Recipe> recipeMap = new LinkedHashMap<>();
     public static int id = 0;
 
     @Override
+    public int addRecipe(Recipe recipe) {
+        recipeMap.put(id++, recipe);
+        return id;
+    }
+
+    @Override
     public void addRecipe(String recipeName, int times, List<Ingredients> ingredientsList, List<String> steps) {
-        recipeMap.put(id++, new Recipe(recipeName, times, ingredientsList, steps));
+
     }
 
     @Override
     public Recipe getRecipe(int id) {
         if (recipeMap.containsKey(id) && id > 0) {
             return recipeMap.get(id);
-        } else {
-            throw new RuntimeException(" ID с данным рецептом не существует.");
         }
+        return null;
+    }
+
+    @Override
+    public Map<Integer, Recipe> getAllRecipe() {
+        if (!recipeMap.isEmpty()) {
+            return recipeMap;
+        }
+        return null;
+    }
+
+    @Override
+    public Recipe editRecipe(int id, Recipe recipe) {
+        if (recipeMap.containsKey(id)) {
+            recipeMap.put(id, recipe);
+            return recipe;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean deleteRecipe(int id) {
+        if (recipeMap.containsKey(id)) {
+            recipeMap.remove(id);
+            return true;
+        }
+        return false;
     }
 }
