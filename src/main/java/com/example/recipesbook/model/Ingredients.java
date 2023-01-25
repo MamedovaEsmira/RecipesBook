@@ -3,7 +3,7 @@ package com.example.recipesbook.model;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 @Data
-@AllArgsConstructor
+//@AllArgsConstructor
 public class Ingredients {
     private String ingredientName;
     private int sum;

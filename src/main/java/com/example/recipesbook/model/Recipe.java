@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
+//@AllArgsConstructor
 public class Recipe {
     private String recipeName;
     private int times;
