@@ -1,7 +1,7 @@
 package com.example.recipesbook.controllers;
 
 import com.example.recipesbook.model.Recipe;
-import com.example.recipesbook.services.impl.RecipeServiceImpl;
+import com.example.recipesbook.services.RecipeService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -21,9 +21,9 @@ import java.util.Map;
 @Tag(name="Рецепты",description = "CRUD- операции и другие эндпоинты для работы с рецептами")
 public class RecipeController {
 
-    private  final RecipeServiceImpl recipeService;
+    private  final RecipeService recipeService;
 
-    public RecipeController(RecipeServiceImpl recipeService) {
+    public RecipeController(RecipeService recipeService) {
         this.recipeService = recipeService;
     }
 

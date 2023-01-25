@@ -1,7 +1,7 @@
 package com.example.recipesbook.controllers;
 
 import com.example.recipesbook.model.Ingredients;
-import com.example.recipesbook.services.impl.IngredientServiceImpl;
+import com.example.recipesbook.services.IngredientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.Parameters;
@@ -21,12 +21,10 @@ import java.util.Map;
 @Tag(name="Ингредиенты",description = "CRUD- операции и другие эндпоинты для работы с ингредиентами")
 public class IngredientController {
 
-    private final IngredientServiceImpl ingredientService;
-
-    public IngredientController(IngredientServiceImpl ingredientService) {
+    private final IngredientService ingredientService;
+    public IngredientController(IngredientService ingredientService) {
         this.ingredientService = ingredientService;
     }
-
     @GetMapping("/{id}")
     @Operation(summary = "Поиск ингредиента по ID")
     @Parameters(value = { @Parameter(name="Id",example = "1")})

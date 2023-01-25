@@ -1,26 +1,29 @@
 package com.example.recipesbook.services.impl;
 
 import com.example.recipesbook.model.Ingredients;
-import com.example.recipesbook.services.FileServiceIngredient;
+import com.example.recipesbook.services.FilesService;
 import com.example.recipesbook.services.IngredientService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 @Service
 public class IngredientServiceImpl implements IngredientService {
 
-    private final FileServiceIngredient fileServiceIngredient;
-    public   Map<Integer, Ingredients> ingredientsMap = new LinkedHashMap<>();
+    private final FilesService filesService;
+    @Value("${name.of.ingredient.data.file}")
+    private String ingredientFileName;
+    public   Map<Integer, Ingredients> ingredientsMap = new TreeMap<>();
     public static int id = 0;
 
-    public IngredientServiceImpl(FileServiceIngredient fileServiceIngredient) {
-        this.fileServiceIngredient = fileServiceIngredient;
+    public IngredientServiceImpl(FilesService filesService) {
+        this.filesService = filesService;
     }
     @PostConstruct
     private void init() {
@@ -30,6 +33,7 @@ public class IngredientServiceImpl implements IngredientService {
     @Override
     public int addIngredient(Ingredients ingredients) {
         ingredientsMap.put(id++, ingredients);
+        saveToFile();
         return id;
     }
 
@@ -58,9 +62,9 @@ public class IngredientServiceImpl implements IngredientService {
     public Ingredients editIngredient(int id, Ingredients ingredient) {
         if (ingredientsMap.containsKey(id)) {
             ingredientsMap.put(id, ingredient);
-            saveToFile();
             return ingredient;
         }
+        saveToFile();
         return null;
     }
 
@@ -75,15 +79,15 @@ public class IngredientServiceImpl implements IngredientService {
     private void saveToFile(){
         try {
             String json = new ObjectMapper().writeValueAsString(ingredientsMap);
-            fileServiceIngredient.saveToFile(json);
+            filesService.saveToFile(json,ingredientFileName);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Файл не найден");
         }
     }
     private void readFromFile(){
         try {
-            String json= fileServiceIngredient.readFromFile();
-            ingredientsMap =  new ObjectMapper().readValue(json, new TypeReference<LinkedHashMap<Integer, Ingredients>>() {
+            String json= filesService.readFromFile(ingredientFileName);
+            ingredientsMap =  new ObjectMapper().readValue(json, new TypeReference<TreeMap<Integer, Ingredients>>() {
             });
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);

@@ -1,0 +1,23 @@
+{
+  "ingredientsList": [
+    {
+    "ingredientName": "Творог",
+    "sum": 350,
+    "units": "г"
+  },
+{
+  "ingredientName": "Куриное яйцо",
+  "sum": 2,
+  "units": "штук"
+},
+{
+"ingredientName": "Пшеничная мука",
+"sum": 6,
+"units": "столовых ложек"
+},
+{
+"ingredientName": "Сахар",
+"sum": 2,
+"units": "столовые ложки"
+}
+]}
