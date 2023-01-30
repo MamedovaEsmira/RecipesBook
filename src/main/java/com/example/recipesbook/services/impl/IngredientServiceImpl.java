@@ -8,9 +8,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -26,7 +24,7 @@ public class IngredientServiceImpl implements IngredientService {
     private String ingredientFileName;
 
     @PostConstruct
-    private void init() throws IOException {
+    private void init(){
         readFromFile();
     }
 
@@ -61,9 +59,9 @@ public class IngredientServiceImpl implements IngredientService {
     public Ingredients editIngredient(int id, Ingredients ingredient) {
         if (ingredientsMap.containsKey(id)) {
             ingredientsMap.put(id, ingredient);
+            saveToFile();
             return ingredient;
         }
-        saveToFile();
         return null;
     }
 

@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.TreeMap;
 @Service
 public class RecipeServiceImpl implements RecipeService {
-    public Map<Integer, Recipe> recipeMap = new TreeMap<>();
+    private Map<Integer, Recipe> recipeMap = new TreeMap<>();
     public static int id = 0;
 
     private final FilesService filesService;
@@ -33,6 +33,7 @@ public class RecipeServiceImpl implements RecipeService {
     @Override
     public int addRecipe(Recipe recipe) {
         recipeMap.put(id++, recipe);
+        saveToFile();
         return id;
     }
 
@@ -56,6 +57,7 @@ public class RecipeServiceImpl implements RecipeService {
     public Recipe editRecipe(int id, Recipe recipe) {
         if (recipeMap.containsKey(id)) {
             recipeMap.put(id, recipe);
+            saveToFile();
             return recipe;
         }
         return null;
