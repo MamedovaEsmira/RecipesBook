@@ -2,6 +2,8 @@ package com.example.recipesbook.services.impl;
 import com.example.recipesbook.services.FilesService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -10,7 +12,25 @@ public class FilesServiceImpl implements FilesService {
 
     @Value("${path.to.data.file}")
     private String dataFilePath;
+    @Value("${name.of.recipe.data.file}")
+    private String recipeFileName;
 
+    @Value("${name.of.ingredient.data.file}")
+    private String ingredientFileName;
+
+    @Override
+    public File getDataFile() {
+        return null;
+    }
+
+    @Override
+    public File getDataFileRecipe(){
+        return new File(dataFilePath +"/" +recipeFileName);
+    }
+    @Override
+    public File getDataFileIngredient(){
+        return new File(dataFilePath +"/" +ingredientFileName);
+    }
     @Override
     public boolean saveToFile(String json, String dataFileName) {
         Path path = Path.of(dataFilePath,dataFileName);
