@@ -10,24 +10,28 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
 @Service
 public class IngredientServiceImpl implements IngredientService {
 
+    private Map<Integer, Ingredients> ingredientsMap = new TreeMap<>();
+    public static int id = 0;
+
     private final FilesService filesService;
+
     @Value("${name.of.ingredient.data.file}")
     private String ingredientFileName;
-    public   Map<Integer, Ingredients> ingredientsMap = new TreeMap<>();
-    public static int id = 0;
+
+    @PostConstruct
+    private void init() throws IOException {
+        readFromFile();
+    }
 
     public IngredientServiceImpl(FilesService filesService) {
         this.filesService = filesService;
-    }
-    @PostConstruct
-    private void init() {
-        readFromFile();
     }
 
     @Override
@@ -35,11 +39,6 @@ public class IngredientServiceImpl implements IngredientService {
         ingredientsMap.put(id++, ingredients);
         saveToFile();
         return id;
-    }
-
-    @Override
-    public void addIngredient(String ingredientName, int sum, String units) {
-
     }
 
     @Override
@@ -72,25 +71,27 @@ public class IngredientServiceImpl implements IngredientService {
     public boolean deleteIngredient(int id) {
         if (ingredientsMap.containsKey(id)) {
             ingredientsMap.remove(id);
+            saveToFile();
             return true;
         }
         return false;
     }
-    private void saveToFile(){
+    private void saveToFile() {
         try {
             String json = new ObjectMapper().writeValueAsString(ingredientsMap);
-            filesService.saveToFile(json,ingredientFileName);
+            filesService.saveToFile(json, ingredientFileName);
         } catch (JsonProcessingException e) {
             throw new RuntimeException("Файл не найден");
         }
     }
-    private void readFromFile(){
+    private void readFromFile() {
         try {
-            String json= filesService.readFromFile(ingredientFileName);
-            ingredientsMap =  new ObjectMapper().readValue(json, new TypeReference<TreeMap<Integer, Ingredients>>() {
+            String json = filesService.readFromFile(ingredientFileName);
+            ingredientsMap = new ObjectMapper().readValue(json, new TypeReference<TreeMap<Integer, Ingredients>>() {
             });
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+
     }
 }

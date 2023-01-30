@@ -6,9 +6,8 @@ import java.util.List;
 import java.util.Map;
 
 public interface RecipeService {
-    int addRecipe(Recipe recipe);
 
-    void addRecipe(String recipeName, int times, List<Ingredients> ingredientsList, List<String> steps);
+    int addRecipe(Recipe recipe);
 
     Recipe getRecipe(int id);
 

@@ -8,8 +8,6 @@ public interface IngredientService {
 
     int addIngredient(Ingredients ingredients);
 
-    void addIngredient(String ingredientName, int sum, String units);
-
     Ingredients getIngredient(int id);
 
     Map<Integer, Ingredients> getAllIngredients();
@@ -18,4 +16,3 @@ public interface IngredientService {
 
     boolean deleteIngredient(int id);
 }
-
