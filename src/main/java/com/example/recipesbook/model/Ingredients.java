@@ -18,4 +18,9 @@ public class Ingredients {
     @Positive
     private int sum;
     private String units;
+
+    @Override
+    public String toString() {
+        return  ingredientName + " " + sum + " " + units ;
+    }
 }

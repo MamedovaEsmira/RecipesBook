@@ -1,6 +1,7 @@
 package com.example.recipesbook.services.impl;
 
 import com.example.recipesbook.ExceptionsApp;
+import com.example.recipesbook.model.Ingredients;
 import com.example.recipesbook.model.Recipe;
 import com.example.recipesbook.services.FilesService;
 import com.example.recipesbook.services.RecipeService;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Value;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
@@ -107,16 +109,24 @@ public class RecipeServiceImpl implements RecipeService {
     }
     @Override
     public Path createRecipeText() throws IOException {
-        Path path = filesService.createTempFile("Recipes");
-        for (Recipe recipe : recipeMap.values()) {
-            try (Writer writer = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
-                writer.append(recipe.getRecipeName())
-                        .append(recipe.getTimes() + "\n")
-                        .append(String.valueOf(recipe.getIngredientsList()))
-                        .append("\n" + recipe.getSteps());
-                writer.append("\n");
+        recipeMap.getOrDefault(id, null);
+        Path recipes = filesService.createTempFile("Recipes");
+        try (Writer writer = Files.newBufferedWriter(recipes, StandardCharsets.UTF_8)) {
+            for (Recipe recipe : recipeMap.values()) {
+                StringBuilder ingredients = new StringBuilder();
+                StringBuilder steps = new StringBuilder();
+                for(Ingredients ingredient :recipe.getIngredientsList()){
+                    ingredients.append(ingredient).append(", \n");
+                }
+                for (String instr : recipe.getSteps()){
+                    steps.append("\n").append(instr);
+                }
+                writer.append(recipe.getRecipeName()).append("\n").append("Время приготовления: ")
+                        .append(String.valueOf(recipe.getTimes())).append(" минут ").append(" Необходимые ингредиенты: \n ")
+                        .append(ingredients.toString()).append(" Инструкция: ").append(steps.toString());
+                writer.append("\n\n");
             }
         }
-        return path;
+        return recipes;
     }
 }

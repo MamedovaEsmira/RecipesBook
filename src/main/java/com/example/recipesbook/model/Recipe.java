@@ -23,4 +23,8 @@ public class Recipe {
     @NotEmpty
     private List<String> steps;
 
+    @Override
+    public String toString() {
+        return  recipeName +" "+ times + " " + ingredientsList + " " + steps;
+    }
 }
