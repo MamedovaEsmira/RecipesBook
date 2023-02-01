@@ -1,18 +1,19 @@
 package com.example.recipesbook.services;
 
+import com.example.recipesbook.ExceptionsApp;
 import com.example.recipesbook.model.Ingredients;
 
 import java.util.Map;
 
 public interface IngredientService {
 
-    int addIngredient(Ingredients ingredients);
+    int addIngredient(Ingredients ingredients) throws ExceptionsApp;
 
-    Ingredients getIngredient(int id);
+    Ingredients getIngredient(int id) throws ExceptionsApp;
 
-    Map<Integer, Ingredients> getAllIngredients();
+    Map<Integer, Ingredients> getAllIngredients() throws ExceptionsApp;
 
-    Ingredients editIngredient(int id, Ingredients ingredient);
+    Ingredients editIngredient(int id, Ingredients ingredient) throws ExceptionsApp;
 
-    boolean deleteIngredient(int id);
+    boolean deleteIngredient(int id) throws ExceptionsApp;
 }

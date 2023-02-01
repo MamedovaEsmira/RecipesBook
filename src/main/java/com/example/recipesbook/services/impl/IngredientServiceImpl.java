@@ -1,5 +1,6 @@
 package com.example.recipesbook.services.impl;
 
+import com.example.recipesbook.ExceptionsApp;
 import com.example.recipesbook.model.Ingredients;
 import com.example.recipesbook.services.FilesService;
 import com.example.recipesbook.services.IngredientService;
@@ -9,7 +10,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -25,8 +25,12 @@ public class IngredientServiceImpl implements IngredientService {
     private String ingredientFileName;
 
     @PostConstruct
-    private void init()throws IOException {
-        readFromFile();
+    private void init() {
+        try {
+            readFromFile();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
     }
 
     public IngredientServiceImpl(FilesService filesService) {
@@ -34,46 +38,52 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public int addIngredient(Ingredients ingredients) {
-        ingredientsMap.put(id++, ingredients);
-        saveToFile();
-        return id;
+    public int addIngredient(Ingredients ingredients) throws ExceptionsApp {
+        if (!ingredientsMap.containsValue(ingredients)){
+            ingredientsMap.put(id++, ingredients);
+            saveToFile();
+            return id;
+        }
+        else {
+            throw new ExceptionsApp("Такой ингредиент уже есть.");
+        }
     }
 
     @Override
-    public Ingredients getIngredient(int id) {
+    public Ingredients getIngredient(int id)throws ExceptionsApp {
         if (ingredientsMap.containsKey(id) && id > 0) {
             return ingredientsMap.get(id);
+        } else {
+            throw new ExceptionsApp("Не найден ингредиент по id.");
         }
-        return null;
     }
-
     @Override
-    public Map<Integer, Ingredients> getAllIngredients() {
+    public Map<Integer, Ingredients> getAllIngredients()throws ExceptionsApp {
         if (!ingredientsMap.isEmpty()) {
             return ingredientsMap;
-        }
-        return null;
+        } else
+            throw new ExceptionsApp("Список ингредиентов пуст.");
     }
 
+
     @Override
-    public Ingredients editIngredient(int id, Ingredients ingredient) {
+    public Ingredients editIngredient(int id, Ingredients ingredient)throws ExceptionsApp {
         if (ingredientsMap.containsKey(id)) {
             ingredientsMap.put(id, ingredient);
             saveToFile();
             return ingredient;
-        }
-        return null;
-    }
+        } else
+            throw new ExceptionsApp("Не найден ингредиент по id для редактирования.");
+}
 
     @Override
-    public boolean deleteIngredient(int id) {
+    public boolean deleteIngredient(int id) throws ExceptionsApp{
         if (ingredientsMap.containsKey(id)) {
             ingredientsMap.remove(id);
             saveToFile();
             return true;
-        }
-        return false;
+        } else
+            throw new ExceptionsApp("Не найден ингредиент по id для удаления.");
     }
     private void saveToFile() {
         try {

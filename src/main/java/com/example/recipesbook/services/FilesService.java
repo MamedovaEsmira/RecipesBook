@@ -1,10 +1,9 @@
 package com.example.recipesbook.services;
 
 import java.io.File;
+import java.nio.file.Path;
 
 public interface FilesService {
-    File getDataFile();
-
     File getDataFileRecipe();
 
     File getDataFileIngredient();
@@ -14,4 +13,6 @@ public interface FilesService {
     String readFromFile(String dataFileName);
 
     boolean cleanDataFile(String dataFileName);
+
+    Path createTempFile(String suffix);
 }

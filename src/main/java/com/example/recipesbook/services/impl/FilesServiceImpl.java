@@ -19,11 +19,6 @@ public class FilesServiceImpl implements FilesService {
     private String ingredientFileName;
 
     @Override
-    public File getDataFile() {
-        return null;
-    }
-
-    @Override
     public File getDataFileRecipe(){
         return new File(dataFilePath +"/" +recipeFileName);
     }
@@ -50,8 +45,9 @@ public class FilesServiceImpl implements FilesService {
         try {
             return Files.readString(path);
         } catch (IOException e) {
-            throw new RuntimeException("Файл не найден");
+            e.printStackTrace();
         }
+        return dataFilePath;
     }
 @Override
     public boolean cleanDataFile(String dataFileName) {
@@ -63,6 +59,14 @@ public class FilesServiceImpl implements FilesService {
         } catch (IOException e) {
             e.printStackTrace();
             return false;
+        }
+    }
+    @Override
+    public Path createTempFile(String suffix){
+        try {
+          return  Files.createTempFile(Path.of(dataFilePath), "temp", suffix);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 }

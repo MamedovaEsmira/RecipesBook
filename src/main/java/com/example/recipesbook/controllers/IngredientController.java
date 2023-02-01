@@ -1,5 +1,6 @@
 package com.example.recipesbook.controllers;
 
+import com.example.recipesbook.ExceptionsApp;
 import com.example.recipesbook.model.Ingredients;
 import com.example.recipesbook.services.IngredientService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -30,8 +31,16 @@ public class IngredientController {
     @Parameters(value = { @Parameter(name="Id",example = "1")})
     @ApiResponses(value = { @ApiResponse(responseCode = "200",description = "Ингредиент найден!",
             content = {@Content(mediaType ="application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = Ingredients.class)))})})
-    public ResponseEntity<Ingredients> getIngredient(@PathVariable int id) {
+                    array = @ArraySchema(schema = @Schema(implementation = Ingredients.class)))}),
+    @ApiResponse(responseCode = "400",
+            description = "Ошибка запроса."),
+    @ApiResponse(responseCode = "404",
+            description = "Некорректный URL."),
+    @ApiResponse(responseCode = "500",
+            description = "Ошибка сервера.")
+}
+    )
+    public ResponseEntity<Ingredients> getIngredient(@PathVariable int id) throws ExceptionsApp {
         Ingredients ingredient = ingredientService.getIngredient(id);
         if (ingredient == null) {
             ResponseEntity.notFound().build();
@@ -43,8 +52,16 @@ public class IngredientController {
     @Operation(summary = "Поиск всех ингредиентов")
     @ApiResponses(value = { @ApiResponse(responseCode = "200",description = "Ингредиенты найдены!",
             content = {@Content(mediaType ="application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = Ingredients.class)))})})
-    public ResponseEntity<Map<Integer,Ingredients>> getAllIngredients(){
+                    array = @ArraySchema(schema = @Schema(implementation = Ingredients.class)))}),
+    @ApiResponse(responseCode = "400",
+            description = "Ошибка запроса."),
+    @ApiResponse(responseCode = "404",
+            description = "Некорректный URL."),
+    @ApiResponse(responseCode = "500",
+            description = "Ошибка сервера.")
+}
+    )
+    public ResponseEntity<Map<Integer,Ingredients>> getAllIngredients()throws ExceptionsApp{
         Map<Integer, Ingredients> allIngredients = ingredientService.getAllIngredients();
         if(allIngredients == null){
             ResponseEntity.notFound().build();
@@ -58,8 +75,16 @@ public class IngredientController {
     @Parameters(value = { @Parameter(name="Id",example = "1")})
     @ApiResponses(value = { @ApiResponse(responseCode = "200",description = "Ингредиент  добавлен!",
             content = {@Content(mediaType ="application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = Ingredients.class)))})})
-    public ResponseEntity<Integer> addIngredient(@RequestBody Ingredients ingredients) {
+                    array = @ArraySchema(schema = @Schema(implementation = Ingredients.class)))}),
+            @ApiResponse(responseCode = "400",
+                    description = "Ошибка запроса."),
+            @ApiResponse(responseCode = "404",
+                    description = "Некорректный URL."),
+            @ApiResponse(responseCode = "500",
+                    description = "Ошибка сервера.")
+    }
+    )
+    public ResponseEntity<Integer> addIngredient(@RequestBody Ingredients ingredients) throws ExceptionsApp{
         int id = ingredientService.addIngredient(ingredients);
         return ResponseEntity.ok().body(id);
 
@@ -71,8 +96,15 @@ public class IngredientController {
     @Parameters(value = { @Parameter(name="Id",example = "1")})
     @ApiResponses(value = { @ApiResponse(responseCode = "200",description = "Ингредиент редактирован!",
             content = {@Content(mediaType ="application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = Ingredients.class)))})})
-    public ResponseEntity<Ingredients> editIngredient(@PathVariable int id, @RequestBody Ingredients ingredients) {
+                    array = @ArraySchema(schema = @Schema(implementation = Ingredients.class)))}),
+            @ApiResponse(responseCode = "400",
+                    description = "Ошибка запроса."),
+            @ApiResponse(responseCode = "404",
+                    description = "Некорректный URL."),
+            @ApiResponse(responseCode = "500",
+                    description = "Ошибка сервера.")
+    })
+    public ResponseEntity<Ingredients> editIngredient(@PathVariable int id, @RequestBody Ingredients ingredients)throws ExceptionsApp {
         Ingredients editIngredient = ingredientService.editIngredient(id, ingredients);
         if (editIngredient == null) {
             ResponseEntity.notFound().build();
@@ -85,8 +117,16 @@ public class IngredientController {
     @Parameters(value = { @Parameter(name="Id",example = "1")})
     @ApiResponses(value = { @ApiResponse(responseCode = "200",description = "Ингредиент удален!",
             content = {@Content(mediaType ="application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = Ingredients.class)))})})
-    public ResponseEntity<Void> deleteIngredient(@PathVariable int id) {
+                    array = @ArraySchema(schema = @Schema(implementation = Ingredients.class)))}),
+            @ApiResponse(responseCode = "400",
+                    description = "Ошибка запроса."),
+            @ApiResponse(responseCode = "404",
+                    description = "Некорректный URL."),
+            @ApiResponse(responseCode = "500",
+                    description = "Ошибка сервера.")
+    }
+    )
+    public ResponseEntity<Void> deleteIngredient(@PathVariable int id)throws ExceptionsApp {
         if (ingredientService.deleteIngredient(id)) {
             return ResponseEntity.ok().build();
         }
