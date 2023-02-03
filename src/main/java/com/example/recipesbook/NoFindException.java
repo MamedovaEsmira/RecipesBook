@@ -4,8 +4,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class ExceptionsApp extends Exception{
-        public ExceptionsApp(String s) {
+public class NoFindException extends Exception{
+        public NoFindException(String s) {
         super(s);
     }
     }

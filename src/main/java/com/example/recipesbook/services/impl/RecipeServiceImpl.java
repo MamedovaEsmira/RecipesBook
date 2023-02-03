@@ -1,6 +1,6 @@
 package com.example.recipesbook.services.impl;
 
-import com.example.recipesbook.ExceptionsApp;
+import com.example.recipesbook.NoFindException;
 import com.example.recipesbook.model.Ingredients;
 import com.example.recipesbook.model.Recipe;
 import com.example.recipesbook.services.FilesService;
@@ -16,7 +16,6 @@ import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 import java.util.Map;
 import java.util.TreeMap;
 @Service
@@ -28,9 +27,11 @@ public class RecipeServiceImpl implements RecipeService {
 
     @Value("${name.of.recipe.data.file}")
     private String recipeFileName;
+
     public RecipeServiceImpl(FilesService filesService) {
         this.filesService = filesService;
     }
+
     @PostConstruct
     private void init() {
         try {
@@ -41,55 +42,56 @@ public class RecipeServiceImpl implements RecipeService {
     }
 
     @Override
-    public int addRecipe(Recipe recipe) throws ExceptionsApp {
-        if(!recipeMap.containsValue(recipe)){
+    public int addRecipe(Recipe recipe) throws NoFindException {
+        if (!recipeMap.containsValue(recipe)) {
             recipeMap.put(id++, recipe);
             saveToFile();
             return id;
-        } else{
-            throw new ExceptionsApp("Такой рецепт уже существует.");
+        } else {
+            throw new NoFindException("Такой рецепт уже существует.");
         }
     }
 
     @Override
-    public Recipe getRecipe(int id) throws ExceptionsApp{
+    public Recipe getRecipe(int id) throws NoFindException {
         if (recipeMap.containsKey(id) && id > 0) {
             return recipeMap.get(id);
         } else {
-            throw new ExceptionsApp("Не найден файл с таким id.");
+            throw new NoFindException("Не найден файл с таким id.");
         }
     }
 
     @Override
-    public Map<Integer, Recipe> getAllRecipe() throws ExceptionsApp{
+    public Map<Integer, Recipe> getAllRecipe() throws NoFindException {
         if (!recipeMap.isEmpty()) {
             return recipeMap;
-        }else {
-            throw new ExceptionsApp("Список рецептов пуст.");
+        } else {
+            throw new NoFindException("Список рецептов пуст.");
         }
     }
 
     @Override
-    public Recipe editRecipe(int id, Recipe recipe) throws ExceptionsApp{
+    public Recipe editRecipe(int id, Recipe recipe) throws NoFindException {
         if (recipeMap.containsKey(id)) {
             recipeMap.put(id, recipe);
             saveToFile();
             return recipe;
-        }else {
-            throw new ExceptionsApp("Не найден рецепт по id для редактирования.");
+        } else {
+            throw new NoFindException("Не найден рецепт по id для редактирования.");
         }
     }
 
     @Override
-    public boolean deleteRecipe(int id)throws ExceptionsApp {
+    public boolean deleteRecipe(int id) throws NoFindException {
         if (recipeMap.containsKey(id)) {
             recipeMap.remove(id);
             saveToFile();
             return true;
-        }else {
-            throw new ExceptionsApp("Удалить невозможно. Рецепт по id не найден.");
+        } else {
+            throw new NoFindException("Удалить невозможно. Рецепт по id не найден.");
         }
     }
+
     private void saveToFile() {
         try {
             String json = new ObjectMapper().writeValueAsString(recipeMap);
@@ -98,6 +100,7 @@ public class RecipeServiceImpl implements RecipeService {
             throw new RuntimeException("Файл не найден");
         }
     }
+
     private void readFromFile() {
         String json = filesService.readFromFile(recipeFileName);
         try {
@@ -107,6 +110,7 @@ public class RecipeServiceImpl implements RecipeService {
             throw new RuntimeException(e);
         }
     }
+
     @Override
     public Path createRecipeText() throws IOException {
         recipeMap.getOrDefault(id, null);
@@ -115,16 +119,16 @@ public class RecipeServiceImpl implements RecipeService {
             for (Recipe recipe : recipeMap.values()) {
                 StringBuilder ingredients = new StringBuilder();
                 StringBuilder steps = new StringBuilder();
-                for(Ingredients ingredient :recipe.getIngredientsList()){
-                    ingredients.append(ingredient).append(", \n");
+                for (Ingredients ingredient : recipe.getIngredientsList()) {
+                    ingredients.append(ingredient).append(", \r\n");
                 }
-                for (String instr : recipe.getSteps()){
-                    steps.append("\n").append(instr);
+                for (String instr : recipe.getSteps()) {
+                    steps.append("\r\n").append(instr);
                 }
-                writer.append(recipe.getRecipeName()).append("\n").append("Время приготовления: ")
-                        .append(String.valueOf(recipe.getTimes())).append(" минут ").append(" Необходимые ингредиенты: \n ")
-                        .append(ingredients.toString()).append(" Инструкция: ").append(steps.toString());
-                writer.append("\n\n");
+                writer.append(recipe.getRecipeName()).append("\r\n").append("Время приготовления: \r\n")
+                        .append(String.valueOf(recipe.getTimes())).append(" минут \r\n").append(" Необходимые ингредиенты: \r\n ")
+                        .append(ingredients.toString()).append(" Инструкция: \r\n").append(steps.toString());
+                writer.append("\r\n");
             }
         }
         return recipes;

@@ -1,6 +1,6 @@
 package com.example.recipesbook.controllers;
 
-import com.example.recipesbook.ExceptionsApp;
+import com.example.recipesbook.NoFindException;
 import com.example.recipesbook.model.Recipe;
 import com.example.recipesbook.services.RecipeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,7 +48,7 @@ public class RecipeController {
                     description = "Некорректный URL."),
             @ApiResponse(responseCode = "500",
                     description = "Ошибка сервера.")})
-    public ResponseEntity<Recipe> getRecipe(@PathVariable int id)throws ExceptionsApp {
+    public ResponseEntity<Recipe> getRecipe(@PathVariable int id)throws NoFindException {
         Recipe recipe = recipeService.getRecipe(id);
         if (recipe == null) {
             ResponseEntity.notFound().build();
@@ -67,7 +67,7 @@ public class RecipeController {
                     description = "Некорректный URL."),
             @ApiResponse(responseCode = "500",
                     description = "Ошибка сервера.")})
-    public ResponseEntity<Map<Integer,Recipe>> getAllRecipes()throws ExceptionsApp {
+    public ResponseEntity<Map<Integer,Recipe>> getAllRecipes()throws NoFindException {
         Map<Integer, Recipe> allRecipe = recipeService.getAllRecipe();
         if(allRecipe == null){
             ResponseEntity.notFound().build();
@@ -88,7 +88,7 @@ public class RecipeController {
                     description = "Некорректный URL."),
             @ApiResponse(responseCode = "500",
                     description = "Ошибка сервера.")})
-    public ResponseEntity<Integer> addRecipe(@RequestBody Recipe recipe)throws ExceptionsApp {
+    public ResponseEntity<Integer> addRecipe(@RequestBody Recipe recipe)throws NoFindException {
         int id = recipeService.addRecipe(recipe);
         return ResponseEntity.ok().body(id);
     }
@@ -106,7 +106,7 @@ public class RecipeController {
                     description = "Некорректный URL."),
             @ApiResponse(responseCode = "500",
                     description = "Ошибка сервера.")})
-    public ResponseEntity<Recipe> editRecipe(@PathVariable int id, @RequestBody Recipe recipe)throws ExceptionsApp {
+    public ResponseEntity<Recipe> editRecipe(@PathVariable int id, @RequestBody Recipe recipe)throws NoFindException {
         Recipe newRecipe = recipeService.editRecipe(id, recipe);
         if (newRecipe == null) {
             ResponseEntity.notFound().build();
@@ -126,14 +126,14 @@ public class RecipeController {
                     description = "Некорректный URL."),
             @ApiResponse(responseCode = "500",
                     description = "Ошибка сервера.")})
-    public ResponseEntity<Void> deleteRecipe(@PathVariable int id)throws ExceptionsApp {
+    public ResponseEntity<Void> deleteRecipe(@PathVariable int id)throws NoFindException {
         if (recipeService.deleteRecipe(id)) {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
     }
-    @GetMapping(value = "/txt", produces = MediaType.TEXT_PLAIN_VALUE)
-    @Operation(summary = "Отчет по рецептам в формате .txt")
+    @GetMapping(value = "/txt")
+    @Operation(summary = "Отчет по рецептам в формате txt")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",
                     description = "Отчет по рецептам."),
@@ -155,7 +155,7 @@ public class RecipeController {
             return ResponseEntity.ok()
                     .contentType(MediaType.TEXT_PLAIN)
                     .contentLength(Files.size(path))
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + "txt\"")
+                    .header(HttpHeaders.CONTENT_DISPOSITION,  "attachment; filename=\"" + "txt\"")
                     .body(resource);
         } catch (IOException e) {
             e.printStackTrace();

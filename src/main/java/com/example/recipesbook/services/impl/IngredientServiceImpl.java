@@ -1,6 +1,6 @@
 package com.example.recipesbook.services.impl;
 
-import com.example.recipesbook.ExceptionsApp;
+import com.example.recipesbook.NoFindException;
 import com.example.recipesbook.model.Ingredients;
 import com.example.recipesbook.services.FilesService;
 import com.example.recipesbook.services.IngredientService;
@@ -38,52 +38,52 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public int addIngredient(Ingredients ingredients) throws ExceptionsApp {
+    public int addIngredient(Ingredients ingredients) throws NoFindException {
         if (!ingredientsMap.containsValue(ingredients)){
             ingredientsMap.put(id++, ingredients);
             saveToFile();
             return id;
         }
         else {
-            throw new ExceptionsApp("Такой ингредиент уже есть.");
+            throw new NoFindException("Такой ингредиент уже есть.");
         }
     }
 
     @Override
-    public Ingredients getIngredient(int id)throws ExceptionsApp {
+    public Ingredients getIngredient(int id)throws NoFindException {
         if (ingredientsMap.containsKey(id) && id > 0) {
             return ingredientsMap.get(id);
         } else {
-            throw new ExceptionsApp("Не найден ингредиент по id.");
+            throw new NoFindException("Не найден ингредиент по id.");
         }
     }
     @Override
-    public Map<Integer, Ingredients> getAllIngredients()throws ExceptionsApp {
+    public Map<Integer, Ingredients> getAllIngredients()throws NoFindException {
         if (!ingredientsMap.isEmpty()) {
             return ingredientsMap;
         } else
-            throw new ExceptionsApp("Список ингредиентов пуст.");
+            throw new NoFindException("Список ингредиентов пуст.");
     }
 
 
     @Override
-    public Ingredients editIngredient(int id, Ingredients ingredient)throws ExceptionsApp {
+    public Ingredients editIngredient(int id, Ingredients ingredient)throws NoFindException {
         if (ingredientsMap.containsKey(id)) {
             ingredientsMap.put(id, ingredient);
             saveToFile();
             return ingredient;
         } else
-            throw new ExceptionsApp("Не найден ингредиент по id для редактирования.");
+            throw new NoFindException("Не найден ингредиент по id для редактирования.");
 }
 
     @Override
-    public boolean deleteIngredient(int id) throws ExceptionsApp{
+    public boolean deleteIngredient(int id) throws NoFindException {
         if (ingredientsMap.containsKey(id)) {
             ingredientsMap.remove(id);
             saveToFile();
             return true;
         } else
-            throw new ExceptionsApp("Не найден ингредиент по id для удаления.");
+            throw new NoFindException("Не найден ингредиент по id для удаления.");
     }
     private void saveToFile() {
         try {
