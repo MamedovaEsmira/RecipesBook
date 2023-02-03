@@ -1,7 +1,8 @@
 package com.example.recipesbook.controllers;
 
-import com.example.recipesbook.NoFindException;
-import com.example.recipesbook.model.Ingredients;
+import com.example.recipesbook.exception.IngredientAlreadyExistException;
+import com.example.recipesbook.exception.IngredientNotFoundException;
+import com.example.recipesbook.model.Ingredient;
 import com.example.recipesbook.services.IngredientService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -31,7 +32,7 @@ public class IngredientController {
     @Parameters(value = { @Parameter(name="Id",example = "1")})
     @ApiResponses(value = { @ApiResponse(responseCode = "200",description = "Ингредиент найден!",
             content = {@Content(mediaType ="application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = Ingredients.class)))}),
+                    array = @ArraySchema(schema = @Schema(implementation = Ingredient.class)))}),
     @ApiResponse(responseCode = "400",
             description = "Ошибка запроса."),
     @ApiResponse(responseCode = "404",
@@ -40,8 +41,8 @@ public class IngredientController {
             description = "Ошибка сервера.")
 }
     )
-    public ResponseEntity<Ingredients> getIngredient(@PathVariable int id) throws NoFindException {
-        Ingredients ingredient = ingredientService.getIngredient(id);
+    public ResponseEntity<Ingredient> getIngredient(@PathVariable int id) throws IngredientNotFoundException {
+        Ingredient ingredient = ingredientService.getIngredient(id);
         if (ingredient == null) {
             ResponseEntity.notFound().build();
         }
@@ -52,7 +53,7 @@ public class IngredientController {
     @Operation(summary = "Поиск всех ингредиентов")
     @ApiResponses(value = { @ApiResponse(responseCode = "200",description = "Ингредиенты найдены!",
             content = {@Content(mediaType ="application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = Ingredients.class)))}),
+                    array = @ArraySchema(schema = @Schema(implementation = Ingredient.class)))}),
     @ApiResponse(responseCode = "400",
             description = "Ошибка запроса."),
     @ApiResponse(responseCode = "404",
@@ -61,8 +62,8 @@ public class IngredientController {
             description = "Ошибка сервера.")
 }
     )
-    public ResponseEntity<Map<Integer,Ingredients>> getAllIngredients()throws NoFindException {
-        Map<Integer, Ingredients> allIngredients = ingredientService.getAllIngredients();
+    public ResponseEntity<Map<Integer, Ingredient>> getAllIngredients()throws IngredientNotFoundException {
+        Map<Integer, Ingredient> allIngredients = ingredientService.getAllIngredients();
         if(allIngredients == null){
             ResponseEntity.notFound().build();
         }
@@ -75,7 +76,7 @@ public class IngredientController {
     @Parameters(value = { @Parameter(name="Id",example = "1")})
     @ApiResponses(value = { @ApiResponse(responseCode = "200",description = "Ингредиент  добавлен!",
             content = {@Content(mediaType ="application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = Ingredients.class)))}),
+                    array = @ArraySchema(schema = @Schema(implementation = Ingredient.class)))}),
             @ApiResponse(responseCode = "400",
                     description = "Ошибка запроса."),
             @ApiResponse(responseCode = "404",
@@ -83,9 +84,8 @@ public class IngredientController {
             @ApiResponse(responseCode = "500",
                     description = "Ошибка сервера.")
     }
-    )
-    public ResponseEntity<Integer> addIngredient(@RequestBody Ingredients ingredients) throws NoFindException {
-        int id = ingredientService.addIngredient(ingredients);
+    ) public ResponseEntity<Integer> addIngredient(@RequestBody Ingredient ingredient) throws IngredientAlreadyExistException {
+        int id = ingredientService.addIngredient(ingredient);
         return ResponseEntity.ok().body(id);
 
     }
@@ -96,7 +96,7 @@ public class IngredientController {
     @Parameters(value = { @Parameter(name="Id",example = "1")})
     @ApiResponses(value = { @ApiResponse(responseCode = "200",description = "Ингредиент редактирован!",
             content = {@Content(mediaType ="application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = Ingredients.class)))}),
+                    array = @ArraySchema(schema = @Schema(implementation = Ingredient.class)))}),
             @ApiResponse(responseCode = "400",
                     description = "Ошибка запроса."),
             @ApiResponse(responseCode = "404",
@@ -104,8 +104,8 @@ public class IngredientController {
             @ApiResponse(responseCode = "500",
                     description = "Ошибка сервера.")
     })
-    public ResponseEntity<Ingredients> editIngredient(@PathVariable int id, @RequestBody Ingredients ingredients)throws NoFindException {
-        Ingredients editIngredient = ingredientService.editIngredient(id, ingredients);
+    public ResponseEntity<Ingredient> editIngredient(@PathVariable int id, @RequestBody Ingredient ingredient)throws IngredientNotFoundException  {
+        Ingredient editIngredient = ingredientService.editIngredient(id, ingredient);
         if (editIngredient == null) {
             ResponseEntity.notFound().build();
         }
@@ -117,7 +117,7 @@ public class IngredientController {
     @Parameters(value = { @Parameter(name="Id",example = "1")})
     @ApiResponses(value = { @ApiResponse(responseCode = "200",description = "Ингредиент удален!",
             content = {@Content(mediaType ="application/json",
-                    array = @ArraySchema(schema = @Schema(implementation = Ingredients.class)))}),
+                    array = @ArraySchema(schema = @Schema(implementation = Ingredient.class)))}),
             @ApiResponse(responseCode = "400",
                     description = "Ошибка запроса."),
             @ApiResponse(responseCode = "404",
@@ -126,7 +126,7 @@ public class IngredientController {
                     description = "Ошибка сервера.")
     }
     )
-    public ResponseEntity<Void> deleteIngredient(@PathVariable int id)throws NoFindException {
+    public ResponseEntity<Void> deleteIngredient(@PathVariable int id)throws IngredientNotFoundException {
         if (ingredientService.deleteIngredient(id)) {
             return ResponseEntity.ok().build();
         }

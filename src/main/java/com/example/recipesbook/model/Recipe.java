@@ -19,12 +19,12 @@ public class Recipe {
     @Positive
     private int times;
     @NotEmpty
-    private List <Ingredients> ingredientsList;
+    private List <Ingredient> ingredientList;
     @NotEmpty
     private List<String> steps;
 
     @Override
     public String toString() {
-        return  recipeName +" "+ times + " " + ingredientsList + " " + steps;
+        return  recipeName +" "+ times + " " + ingredientList + " " + steps;
     }
 }

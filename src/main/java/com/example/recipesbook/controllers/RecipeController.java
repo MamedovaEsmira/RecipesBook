@@ -1,6 +1,7 @@
 package com.example.recipesbook.controllers;
 
-import com.example.recipesbook.NoFindException;
+import com.example.recipesbook.exception.RecipeAlreadyExistException;
+import com.example.recipesbook.exception.RecipeNotFoundException;
 import com.example.recipesbook.model.Recipe;
 import com.example.recipesbook.services.RecipeService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -48,7 +49,7 @@ public class RecipeController {
                     description = "Некорректный URL."),
             @ApiResponse(responseCode = "500",
                     description = "Ошибка сервера.")})
-    public ResponseEntity<Recipe> getRecipe(@PathVariable int id)throws NoFindException {
+    public ResponseEntity<Recipe> getRecipe(@PathVariable int id)throws RecipeNotFoundException {
         Recipe recipe = recipeService.getRecipe(id);
         if (recipe == null) {
             ResponseEntity.notFound().build();
@@ -67,7 +68,7 @@ public class RecipeController {
                     description = "Некорректный URL."),
             @ApiResponse(responseCode = "500",
                     description = "Ошибка сервера.")})
-    public ResponseEntity<Map<Integer,Recipe>> getAllRecipes()throws NoFindException {
+    public ResponseEntity<Map<Integer,Recipe>> getAllRecipes()throws RecipeNotFoundException {
         Map<Integer, Recipe> allRecipe = recipeService.getAllRecipe();
         if(allRecipe == null){
             ResponseEntity.notFound().build();
@@ -88,7 +89,7 @@ public class RecipeController {
                     description = "Некорректный URL."),
             @ApiResponse(responseCode = "500",
                     description = "Ошибка сервера.")})
-    public ResponseEntity<Integer> addRecipe(@RequestBody Recipe recipe)throws NoFindException {
+    public ResponseEntity<Integer> addRecipe(@RequestBody Recipe recipe)throws RecipeAlreadyExistException  {
         int id = recipeService.addRecipe(recipe);
         return ResponseEntity.ok().body(id);
     }
@@ -106,7 +107,7 @@ public class RecipeController {
                     description = "Некорректный URL."),
             @ApiResponse(responseCode = "500",
                     description = "Ошибка сервера.")})
-    public ResponseEntity<Recipe> editRecipe(@PathVariable int id, @RequestBody Recipe recipe)throws NoFindException {
+    public ResponseEntity<Recipe> editRecipe(@PathVariable int id, @RequestBody Recipe recipe)throws RecipeNotFoundException {
         Recipe newRecipe = recipeService.editRecipe(id, recipe);
         if (newRecipe == null) {
             ResponseEntity.notFound().build();
@@ -126,13 +127,13 @@ public class RecipeController {
                     description = "Некорректный URL."),
             @ApiResponse(responseCode = "500",
                     description = "Ошибка сервера.")})
-    public ResponseEntity<Void> deleteRecipe(@PathVariable int id)throws NoFindException {
+    public ResponseEntity<Void> deleteRecipe(@PathVariable int id)throws RecipeNotFoundException {
         if (recipeService.deleteRecipe(id)) {
             return ResponseEntity.ok().build();
         }
         return ResponseEntity.notFound().build();
     }
-    @GetMapping(value = "/txt")
+    @GetMapping(value = "/txt",consumes=MediaType.MULTIPART_FORM_DATA_VALUE)
     @Operation(summary = "Отчет по рецептам в формате txt")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200",

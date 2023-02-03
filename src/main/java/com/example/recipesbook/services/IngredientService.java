@@ -1,19 +1,20 @@
 package com.example.recipesbook.services;
 
-import com.example.recipesbook.NoFindException;
-import com.example.recipesbook.model.Ingredients;
+import com.example.recipesbook.exception.IngredientNotFoundException;
+import com.example.recipesbook.exception.RecipeNotFoundException;
+import com.example.recipesbook.model.Ingredient;
 
 import java.util.Map;
 
 public interface IngredientService {
 
-    int addIngredient(Ingredients ingredients) throws NoFindException;
+    int addIngredient(Ingredient ingredient);
 
-    Ingredients getIngredient(int id) throws NoFindException;
+    Ingredient getIngredient(int id);
 
-    Map<Integer, Ingredients> getAllIngredients() throws NoFindException;
+    Map<Integer, Ingredient> getAllIngredients();
 
-    Ingredients editIngredient(int id, Ingredients ingredient) throws NoFindException;
+    Ingredient editIngredient(int id, Ingredient ingredient);
 
-    boolean deleteIngredient(int id) throws NoFindException;
+    boolean deleteIngredient(int id);
 }

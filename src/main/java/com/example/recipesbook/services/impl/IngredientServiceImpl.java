@@ -1,8 +1,9 @@
 package com.example.recipesbook.services.impl;
 
-import com.example.recipesbook.NoFindException;
-import com.example.recipesbook.model.Ingredients;
+import com.example.recipesbook.exception.IngredientAlreadyExistException;
+import com.example.recipesbook.model.Ingredient;
 import com.example.recipesbook.services.FilesService;
+import com.example.recipesbook.exception.IngredientNotFoundException;
 import com.example.recipesbook.services.IngredientService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -16,7 +17,7 @@ import java.util.TreeMap;
 @Service
 public class IngredientServiceImpl implements IngredientService {
 
-    private Map<Integer, Ingredients> ingredientsMap = new TreeMap<>();
+    private Map<Integer, Ingredient> ingredientsMap = new TreeMap<>();
     public static int id = 0;
 
     private final FilesService filesService;
@@ -38,52 +39,52 @@ public class IngredientServiceImpl implements IngredientService {
     }
 
     @Override
-    public int addIngredient(Ingredients ingredients) throws NoFindException {
-        if (!ingredientsMap.containsValue(ingredients)){
-            ingredientsMap.put(id++, ingredients);
+    public int addIngredient(Ingredient ingredient) {
+        if (!ingredientsMap.containsValue(ingredient)){
+            ingredientsMap.put(id++, ingredient);
             saveToFile();
             return id;
         }
         else {
-            throw new NoFindException("Такой ингредиент уже есть.");
+            throw new IngredientAlreadyExistException("Такой ингредиент уже есть.");
         }
     }
 
     @Override
-    public Ingredients getIngredient(int id)throws NoFindException {
+    public Ingredient getIngredient(int id){
         if (ingredientsMap.containsKey(id) && id > 0) {
             return ingredientsMap.get(id);
         } else {
-            throw new NoFindException("Не найден ингредиент по id.");
+            throw new IngredientNotFoundException("Не найден ингредиент по id.");
         }
     }
     @Override
-    public Map<Integer, Ingredients> getAllIngredients()throws NoFindException {
+    public Map<Integer, Ingredient> getAllIngredients(){
         if (!ingredientsMap.isEmpty()) {
             return ingredientsMap;
         } else
-            throw new NoFindException("Список ингредиентов пуст.");
+            throw new IngredientNotFoundException("Список ингредиентов пуст.");
     }
 
 
     @Override
-    public Ingredients editIngredient(int id, Ingredients ingredient)throws NoFindException {
+    public Ingredient editIngredient(int id, Ingredient ingredient) {
         if (ingredientsMap.containsKey(id)) {
             ingredientsMap.put(id, ingredient);
             saveToFile();
             return ingredient;
         } else
-            throw new NoFindException("Не найден ингредиент по id для редактирования.");
+            throw new IngredientNotFoundException("Не найден ингредиент по id для редактирования.");
 }
 
     @Override
-    public boolean deleteIngredient(int id) throws NoFindException {
+    public boolean deleteIngredient(int id)  {
         if (ingredientsMap.containsKey(id)) {
             ingredientsMap.remove(id);
             saveToFile();
             return true;
         } else
-            throw new NoFindException("Не найден ингредиент по id для удаления.");
+            throw new IngredientNotFoundException("Не найден ингредиент по id для удаления.");
     }
     private void saveToFile() {
         try {
@@ -96,10 +97,10 @@ public class IngredientServiceImpl implements IngredientService {
     private void readFromFile() {
         try {
             String json = filesService.readFromFile(ingredientFileName);
-            ingredientsMap = new ObjectMapper().readValue(json, new TypeReference<TreeMap<Integer, Ingredients>>() {
+            ingredientsMap = new ObjectMapper().readValue(json, new TypeReference<TreeMap<Integer, Ingredient>>() {
             });
         } catch (JsonProcessingException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Файл не найден");
         }
 
     }

@@ -12,7 +12,7 @@ import javax.validation.constraints.Positive;
 @AllArgsConstructor
 @EqualsAndHashCode
 @NoArgsConstructor
-public class Ingredients {
+public class Ingredient {
     @NotBlank(message = "Имя пустое")
     private String ingredientName;
     @Positive
