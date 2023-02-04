@@ -91,17 +91,17 @@ public class IngredientServiceImpl implements IngredientService {
             String json = new ObjectMapper().writeValueAsString(ingredientsMap);
             filesService.saveToFile(json, ingredientFileName);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Файл не найден");
+            e.printStackTrace();
         }
     }
+
     private void readFromFile() {
         try {
             String json = filesService.readFromFile(ingredientFileName);
             ingredientsMap = new ObjectMapper().readValue(json, new TypeReference<TreeMap<Integer, Ingredient>>() {
             });
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Файл не найден");
+            e.printStackTrace();
         }
-
     }
 }

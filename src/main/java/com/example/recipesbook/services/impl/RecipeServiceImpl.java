@@ -22,7 +22,7 @@ import java.util.TreeMap;
 @Service
 public class RecipeServiceImpl implements RecipeService {
     private Map<Integer, Recipe> recipeMap = new TreeMap<>();
-    public  int id = 0;
+    public static int id = 0;
 
     private final FilesService filesService;
 
@@ -98,7 +98,7 @@ public class RecipeServiceImpl implements RecipeService {
             String json = new ObjectMapper().writeValueAsString(recipeMap);
             filesService.saveToFile(json, recipeFileName);
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Файл не найден");
+            e.printStackTrace();
         }
     }
 
@@ -108,10 +108,9 @@ public class RecipeServiceImpl implements RecipeService {
             recipeMap = new ObjectMapper().readValue(json, new TypeReference<TreeMap<Integer, Recipe>>() {
             });
         } catch (JsonProcessingException e) {
-            throw new RuntimeException("Файл не найден");
+            e.printStackTrace();
         }
     }
-
     @Override
     public Path createRecipeText() throws IOException{
         recipeMap.getOrDefault(id, null);
