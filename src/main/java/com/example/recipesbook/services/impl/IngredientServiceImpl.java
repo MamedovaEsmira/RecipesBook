@@ -33,7 +33,6 @@ public class IngredientServiceImpl implements IngredientService {
             e.printStackTrace();
         }
     }
-
     public IngredientServiceImpl(FilesService filesService) {
         this.filesService = filesService;
     }
@@ -49,7 +48,6 @@ public class IngredientServiceImpl implements IngredientService {
             throw new IngredientAlreadyExistException("Такой ингредиент уже есть.");
         }
     }
-
     @Override
     public Ingredient getIngredient(int id){
         if (ingredientsMap.containsKey(id) && id > 0) {
@@ -65,8 +63,6 @@ public class IngredientServiceImpl implements IngredientService {
         } else
             throw new IngredientNotFoundException("Список ингредиентов пуст.");
     }
-
-
     @Override
     public Ingredient editIngredient(int id, Ingredient ingredient) {
         if (ingredientsMap.containsKey(id)) {
@@ -76,7 +72,6 @@ public class IngredientServiceImpl implements IngredientService {
         } else
             throw new IngredientNotFoundException("Не найден ингредиент по id для редактирования.");
 }
-
     @Override
     public boolean deleteIngredient(int id)  {
         if (ingredientsMap.containsKey(id)) {

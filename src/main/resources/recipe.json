@@ -2,7 +2,7 @@
   "0": {
     "recipeName": "Сырники из творога",
     "times": 30,
-    "ingredientsList": [
+    "ingredientList": [
       {
         "ingredientName": "Творог",
         "sum": 350,

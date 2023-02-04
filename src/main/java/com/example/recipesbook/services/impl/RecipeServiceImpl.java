@@ -41,7 +41,6 @@ public class RecipeServiceImpl implements RecipeService {
             e.printStackTrace();
         }
     }
-
     @Override
     public int addRecipe(Recipe recipe){
         if (!recipeMap.containsValue(recipe)) {
@@ -52,7 +51,6 @@ public class RecipeServiceImpl implements RecipeService {
             throw new RecipeAlreadyExistException("Такой рецепт уже существует.");
         }
     }
-
     @Override
     public Recipe getRecipe(int id) {
         if (recipeMap.containsKey(id) && id > 0) {
@@ -61,7 +59,6 @@ public class RecipeServiceImpl implements RecipeService {
             throw new RecipeNotFoundException("Не найден файл с таким id.");
         }
     }
-
     @Override
     public Map<Integer, Recipe> getAllRecipe(){
         if (!recipeMap.isEmpty()) {
@@ -70,7 +67,6 @@ public class RecipeServiceImpl implements RecipeService {
             throw new RecipeNotFoundException("Список рецептов пуст.");
         }
     }
-
     @Override
     public Recipe editRecipe(int id, Recipe recipe) {
         if (recipeMap.containsKey(id)) {
@@ -81,7 +77,6 @@ public class RecipeServiceImpl implements RecipeService {
             throw new RecipeNotFoundException("Не найден рецепт по id для редактирования.");
         }
     }
-
     @Override
     public boolean deleteRecipe(int id) {
         if (recipeMap.containsKey(id)) {
